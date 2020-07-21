@@ -17,12 +17,12 @@ const SendMeetingRequest = ({history}) => {
             <div className="meetingDescDiv">
                 <div className="meetingDateTimeDiv">
                     <div>
-                        <Typography variant="h5" className="listItem">
+                        <Typography variant="h5">
                             Meet {selectedContact} at
                         </Typography>
                     </div>
                     <div>
-                        <Typography variant="h5" className="listItem">
+                        <Typography variant="h5">
                             {meetingTime} on {meetingDate.toLocaleDateString("en-Us", { month: 'short', day: 'numeric' })}
                         </Typography>
                     </div>
