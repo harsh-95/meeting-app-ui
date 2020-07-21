@@ -17,20 +17,6 @@
     margin: 20px auto;
 }
 
-.dateButton {
-    width: 75px;
-}
-
-.dateButton span {
-    display: flex;
-    flex-direction: column;
-    font-size: 10px;
-}
-
-.dateButton span h6 {
-    font-size: 10px;
-}
-
 .timeButtonDiv , .dateButtonDiv{
     margin: 6px 3px;
 }

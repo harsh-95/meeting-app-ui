@@ -1,41 +1,38 @@
 import React from 'react';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { data } from '../../data';
 import { Typography, Button } from '@material-ui/core/';
 import './UserList.css';
-import {withContext} from '../../context';
+import { useSelector, useDispatch } from 'react-redux';
+import { selectContact } from '../../actions/actions';
 
-const UserList = ({history, setSelectedUser}) => {
+const UserList = ({ history }) => {
 
-    const [userList, setUserList] = useState([]);
-
-    useEffect(() => {
-        setUserList(data);
-    }, [])
+    const userList = useSelector(state => state.userList);
+    const dispatch = useDispatch();
 
     const selectThisUser = (name) => {
-        setSelectedUser(name);
-        history.push("/meeting");
+        dispatch(selectContact(name));
+        history.push("/meetingInfo");
     }
 
     return (
         <div className="userListComponent">
             <div className="listHeadingDiv">
-                <Typography variant="h5" className="listItem">
+                <Typography variant="h5">
                     Users List
                 </Typography>
             </div>
-            {userList.map(({ name },i) =>
+            {userList.map(({ name }, i) =>
                 <div key={i} className="listContainerDiv">
                     <div>
-                        <Typography variant="subtitle1" className="listItem">
+                        <Typography variant="subtitle1">
                             {name}
                         </Typography>
                     </div>
                     <div>
-                        <Button variant="outlined" color="secondary" className="meetButton"
-                                onClick={() => selectThisUser(name)}>
+                        <Button variant="outlined" color="secondary"
+                            onClick={() => selectThisUser(name)}>
                             MEET
                         </Button>
                     </div>
@@ -44,4 +41,4 @@ const UserList = ({history, setSelectedUser}) => {
         </div>
     )
 }
-export default withContext(UserList);
+export default UserList;

@@ -1,24 +1,26 @@
 import React from 'react';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { Typography, Button, TextField } from '@material-ui/core/';
+import { Typography, Button } from '@material-ui/core/';
 import './MeetingDetails.css';
-import { withContext } from '../../context';
+import { useSelector, useDispatch } from 'react-redux';
+import { selectMeetingDate, selectMeetingTime } from '../../actions/actions';
 
-const MeetingDetails = ({ selectedUser }) => {
+const MeetingDetails = ({history}) => {
 
     const [dateArray, setDateArray] = useState([]);
     const [timeSlotsArray, setTimeSlotsArray] = useState([]);
-    const [meetingDate, setMeetingDate] = useState(new Date());
-    const [meetingTime, setMeetingTime] = useState("");
-    const [showMeetingDetails, setShowMeetingDetails] = useState(false);
-    const [meetingDesc, setMeetingDesc] = useState("");
+    
+    const selectedContact = useSelector(state => state.selectedContact);
+    const meetingDate = useSelector(state => state.meetingDate);
+    const meetingTime = useSelector(state => state.meetingTime);
+    const dispatch = useDispatch();
 
     useEffect(() => {
         setDateInArray();
         setTimeInArray();
 
-    }, [showMeetingDetails])
+    }, [])
 
     const setDateInArray = () => {
         //set dateArray
@@ -54,46 +56,19 @@ const MeetingDetails = ({ selectedUser }) => {
         setTimeSlotsArray(tempTimeArray);
     }
 
-    const meetingDescription = (
-        <div className="meetingDescDiv">
-            <div className="meetingDateTimeDiv">
-                <div>
-                    <Typography variant="h5" className="listItem">
-                        Meet {selectedUser} at
-                </Typography>
-                </div>
-                <div>
-                    <Typography variant="h5" className="listItem">
-                        {meetingTime} on {meetingDate.toLocaleDateString("en-Us", { month: 'short', day: 'numeric' })}
-                    </Typography>
-                </div>
-            </div>
-            <form className="form" noValidate autoComplete="off">
-                <TextField id="outlined-basic" label="Meeting Description" fullWidth variant="outlined" 
-                            onChange={(e) => setMeetingDesc(e.target.value)} />
-            </form>
-            <Button
-                variant="contained"
-                color="primary"
-                onClick={() => alert('Request sent successfully')}>
-                    Send Request
-            </Button>
-        </div>
-    )
-
     return (
         <div className="meetingDetailsComponent">
-            {timeSlotsArray.length && !showMeetingDetails
+            {timeSlotsArray.length
                 ? <>
                     <div className="listDateComponent">
 
                         {dateArray.map((el, i) =>
                             <div key={i} className="dateButtonDiv">
-                                <Button variant={el.getDate() === meetingDate.getDate() ? "contained" : "outlined"} color="secondary" className="dateButton" onClick={() => setMeetingDate(el)}>
-                                    <Typography variant="subtitle2" className="listItem">
+                                <Button variant={el.getDate() === meetingDate.getDate() ? "contained" : "outlined"} color="primary" onClick={() => dispatch(selectMeetingDate(el))}>
+                                    <Typography variant="subtitle2">
                                         {el.toLocaleDateString("en-Us", { month: 'short', day: 'numeric' })}
                                     </Typography>
-                                    <Typography variant="subtitle2" className="listItem">
+                                    <Typography variant="subtitle2">
                                         {el.toLocaleDateString("en-Us", { weekday: 'short' })}
                                     </Typography>
                                 </Button>
@@ -104,8 +79,8 @@ const MeetingDetails = ({ selectedUser }) => {
                     <div className="listTimeComponent">
                         {timeSlotsArray.map((el, i) =>
                             <div key={i} className="timeButtonDiv">
-                                <Button variant={el === meetingTime ? "contained" : "outlined"} className="timeButton" onClick={() => setMeetingTime(el)}>
-                                    <Typography variant="subtitle2" className="listItem">
+                                <Button variant={el === meetingTime ? "contained" : "outlined"} onClick={() => dispatch(selectMeetingTime(el))}>
+                                    <Typography variant="subtitle1">
                                         {el}
                                     </Typography>
                                 </Button>
@@ -118,19 +93,14 @@ const MeetingDetails = ({ selectedUser }) => {
                             variant="contained"
                             color="primary"
                             disabled={meetingTime ? false : true}
-                            onClick={() => setShowMeetingDetails(true)}>
+                            onClick={() => history.push('/sendMeeting')}>
                             Next
                         </Button>
                     </div>
                 </>
                 : null
             }
-
-            {showMeetingDetails
-                ? meetingDescription
-                : null
-            }
         </div>
     )
 }
-export default withContext(MeetingDetails);
+export default MeetingDetails;
